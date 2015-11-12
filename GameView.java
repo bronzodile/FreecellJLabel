@@ -1,11 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 
 public class GameView extends JPanel 
 {
     private JLayeredPane layeredPane;
     private CardImage[][] cards;
+    
+    private static final int TABLEAUTOP = 100;
+    private static final int MARGIN = 15;
+    private static final int CARDOFFSET = 25;
+    private static final int TABLEAUSTEP = 100;
 
     public GameView(GameController gc){
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -24,5 +30,13 @@ public class GameView extends JPanel
         }
        this.add(layeredPane);
        
+    }
+    public void setTableau(int i, ArrayList<Point> tableau) {
+        int cardCounter = 0;
+        for (Point p: tableau) {
+            layeredPane.setLayer(cards[p.x][p.y - 1],cardCounter);
+            cards[p.x][p.y - 1].setLocation(i * TABLEAUSTEP + MARGIN,TABLEAUTOP + MARGIN + CARDOFFSET * cardCounter);
+            cardCounter += 1;
+        }
     }
 }

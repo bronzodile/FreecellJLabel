@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.awt.Point;
+
 /**
  * Write a description of class GameModel here.
  * 
@@ -116,11 +118,13 @@ public class GameModel
             System.out.println(tableaus[i]);
         }
     }
-    /*
-    public ArrayList<P> getTableau(int tableauNumber) {
+    
+    public ArrayList<Point> getTableau(int tableauNumber) {
         return tableaus[tableauNumber - 1].getCards();
     }    
     
+    /*
+     * 
     public ArrayList<P> getFreeCell() {
         ArrayList<P> list = new ArrayList<P>();
         for (int i = 0; i < 4; i++) {
@@ -132,7 +136,8 @@ public class GameModel
         }
         return list;
     }
-    
+    */
+    /*
     public ArrayList<P> getHomeCell(int cellNumber) {
         return homeCells[cellNumber - 1].getCards();
     } 

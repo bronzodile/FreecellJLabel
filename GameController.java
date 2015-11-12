@@ -22,7 +22,7 @@ public class GameController extends JFrame
         gc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
         gc.pack();
         for (int i = 1; i < 9; i++) {
-         //        gv.setTableau(i, gm.getTableau(i));
+            gv.setTableau(i, gm.getTableau(i));
         }
         gc.setVisible(true);
     }

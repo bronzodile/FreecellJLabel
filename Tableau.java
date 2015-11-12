@@ -1,5 +1,5 @@
 import java.util.*;
-
+import java.awt.Point;
 /**
  * Write a description of class Tableau here.
  * 
@@ -49,15 +49,15 @@ public class Tableau implements Location
         }
         return s.toString();
     }
-    /*
-    public ArrayList<P> getCards() {
-        ArrayList<P> list = new ArrayList<P>();
+    
+    public ArrayList<Point> getCards() {
+        ArrayList<Point> list = new ArrayList<Point>();
         for (Card c: cards) {
-            list.add(new P(c.getRank(), c.getSuite()));
+            list.add(new Point(c.getSuite(),c.getRank()));
         }
         return list;
     }
-    */
+    
     private void updateMoveable() {
         if (!cards.isEmpty()) {
             int size = cards.size();
