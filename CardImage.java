@@ -1,19 +1,29 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class CardImage extends JLabel
 {
     private int rank;
     private int suite;
-    
-    public CardImage(int r, int s, Point origin)
+    private boolean isMoveable;
+    private int memX;
+    private int memY;
+
+    public CardImage(int r, int s)
     {
         ImageIcon icon = getImage(r,s);
         this.setIcon(icon);
         rank = r;
         suite = s;
-        this.setBounds(origin.x, origin.y, icon.getIconWidth(), icon.getIconHeight());
+        this.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
+        isMoveable = false;
+        memX = 0;
+        memY = 0;
+        // this.addMouseListener(this);
+        // this.addMouseMotionListener(this);
     }
+
     private ImageIcon getImage(int r, int s)
     {
         return createImageIcon(getPath(r, s));
@@ -48,4 +58,10 @@ public class CardImage extends JLabel
         }
         return new String("images/" + j + c + ".gif");
     }
+
+    public void setMoveable(boolean newMoveable)
+    {
+        isMoveable = newMoveable;
+    }
+
 }
