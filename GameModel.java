@@ -123,6 +123,10 @@ public class GameModel
         return tableaus[tableauNumber - 1].getCards();
     }    
     
+    public ArrayList<Boolean> getTableauMoveable(int tableauNumber) {
+        return tableaus[tableauNumber -1].getMoveable();
+    }
+    
     /*
      * 
     public ArrayList<P> getFreeCell() {

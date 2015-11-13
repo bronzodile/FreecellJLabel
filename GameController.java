@@ -12,7 +12,8 @@ public class GameController extends JFrame
     public GameController()
     {
         gm = new GameModel();
-        gv = new GameView(this);
+        // gv = new GameView(this);
+        gv = new GameView();
     }
     
     public static void main(String[] args) {
@@ -22,7 +23,7 @@ public class GameController extends JFrame
         gc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
         gc.pack();
         for (int i = 1; i < 9; i++) {
-            gv.setTableau(i, gm.getTableau(i));
+            gv.setTableau(i, gm.getTableau(i),gm.getTableauMoveable(i));
         }
         gc.setVisible(true);
     }

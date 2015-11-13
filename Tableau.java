@@ -57,6 +57,13 @@ public class Tableau implements Location
         }
         return list;
     }
+    public ArrayList<Boolean> getMoveable() {
+        ArrayList<Boolean> list = new ArrayList<Boolean>();
+        for (Card c: cards) {
+            list.add(new Boolean(c.getMoveable()));
+        }
+        return list;
+    }
     
     private void updateMoveable() {
         if (!cards.isEmpty()) {
@@ -68,15 +75,15 @@ public class Tableau implements Location
                 prevCard = cards.get(i);
                 prevCard.setMoveable(false);
             }
-            /* for (int i = size - 2; i >= 0; i--) {
+            for (int i = size - 2; i >= 0; i--) {
                 prevCard = cards.get(i);
-                if (thisCard.getRank() - 1 == prevCard.getRank() && isOpposite(thisCard.getSuite(), prevCard.getSuite())) {
+                if ((thisCard.getRank() + 1 == prevCard.getRank()) && (isOpposite(thisCard.getSuite(), prevCard.getSuite()))) {
                     prevCard.setMoveable(true);
                     thisCard = prevCard;
                 } else {
                     break;
                 }
-            } */
+            } 
         }    
     }   
     private boolean isOpposite(int suite1, int suite2) {

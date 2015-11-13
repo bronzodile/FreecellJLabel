@@ -6,6 +6,8 @@ public class CardImage extends JLabel
 {
     private int rank;
     private int suite;
+    private int stack;
+    private CardImage nextCard;
     private boolean isMoveable;
     private int memX;
     private int memY;
@@ -16,12 +18,12 @@ public class CardImage extends JLabel
         this.setIcon(icon);
         rank = r;
         suite = s;
+        stack = 0;
+        nextCard = null;
         this.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
         isMoveable = false;
         memX = 0;
         memY = 0;
-        // this.addMouseListener(this);
-        // this.addMouseMotionListener(this);
     }
 
     private ImageIcon getImage(int r, int s)
@@ -64,4 +66,23 @@ public class CardImage extends JLabel
         isMoveable = newMoveable;
     }
 
+    public boolean isMoveable(){
+        return isMoveable;
+    }
+
+    public void setStack(int newStack) {
+        stack = newStack;
+    }
+
+    public int getStack() {
+        return stack;
+    }
+
+    public void setNextCard(CardImage newNextCard) {
+        nextCard = newNextCard;
+    }
+
+    public CardImage getNextCard() {
+        return nextCard;
+    }
 }
