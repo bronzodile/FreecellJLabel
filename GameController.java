@@ -13,6 +13,9 @@ public class GameController extends JFrame
     {
         gm = new GameModel();
         // gv = new GameView(this);
+        gm.move(7,1,1);
+        gm.move(10,3,9);
+        gm.move(10,0,11);
         gv = new GameView();
     }
     

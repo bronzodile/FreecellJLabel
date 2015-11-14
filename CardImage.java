@@ -74,7 +74,7 @@ public class CardImage extends JLabel
         stack = newStack;
     }
 
-    public int getStack() {
+    private int getStack() {
         return stack;
     }
 

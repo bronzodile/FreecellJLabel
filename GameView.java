@@ -9,12 +9,15 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
     private CardImage[][] cards;
     private CardImage dragLabel;
     private ArrayList<CardImage> dragGroup;
-    int dragLabelWidthDiv2;
-    int dragLabelHeightDiv3;
-    int dragFromX;
-    int dragFromY;
-    int dragFromLayer;
+    private int dragLabelWidthDiv2;
+    private int dragLabelHeightDiv3;
+    private int dragFromX;
+    private int dragFromY;
+    private int dragFromLayer;
+    private JLabel[] dropPanels;
 
+    private static final int WINDOWH = 600;
+    private static final int WINDOWW = 1000;
     private static final int TABLEAUTOP = 100;
     private static final int MARGIN = 15;
     private static final int CARDOFFSET = 30;
@@ -25,7 +28,7 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
     public GameView(){
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(300, 310));        
+        layeredPane.setPreferredSize(new Dimension(WINDOWW, WINDOWH));        
         cards = new CardImage[4][13];
         dragLabel = null;
         dragGroup = new ArrayList<CardImage>();
@@ -34,7 +37,18 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
         dragFromX = 0;
         dragFromY = 0;
         dragFromLayer = 0;
-        
+        dropPanels = new JLabel[8];
+        for (int i = 0; i < 8; i++) {
+            dropPanels[i] = new JLabel();
+            dropPanels[i].setVerticalAlignment(JLabel.TOP);
+            dropPanels[i].setHorizontalAlignment(JLabel.CENTER);
+            dropPanels[i].setOpaque(true);
+            dropPanels[i].setBackground(Color.gray);
+            dropPanels[i].setForeground(Color.black);
+            dropPanels[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            dropPanels[i].setBounds((i + 1) * TABLEAUSTEP + MARGIN,TABLEAUTOP + MARGIN  , 90, WINDOWH - TABLEAUTOP);            
+            layeredPane.add(dropPanels[i],new Integer(0));
+        }
 
         for (int i = 0; i < 4; i++){
             for(int j = 0; j < 13; j++){
@@ -49,7 +63,7 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
     }
 
     public void setTableau(int i, ArrayList<Point> tableau, ArrayList<Boolean> tableauMoveable) {
-        int cardCounter = 0;
+        int cardCounter = 1;
         Boolean b = null;
         CardImage prevCard = null;
         for (Point p: tableau) {
@@ -81,7 +95,7 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
                 int y = dragFromY + e.getPoint().y - dragLabelHeightDiv3;
                 dragLabel.setLocation(x, y);
                 layeredPane.setLayer(dragLabel,FIRSTHOVERINGLEVEL);
-                
+
                 CardImage tempLabel = dragLabel.getNextCard();
                 int draggedCardsCount = 0;
                 while (tempLabel != null) {
@@ -127,12 +141,16 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
                 tempLabel = tempLabel.getNextCard();
             }
 
+            Point p = SwingUtilities.convertPoint(dragLabel, e.getPoint(), dropPanels[0]);
+            
             dragLabel = null;
             dragLabelWidthDiv2 = 0;
             dragLabelHeightDiv3 = 0;
             dragFromX = 0;
             dragFromY = 0;            
             dragFromLayer = 0;
+            
+            
         }
     }  
 

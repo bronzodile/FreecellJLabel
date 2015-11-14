@@ -1,16 +1,11 @@
 import java.util.*;
 import java.awt.Point;
-/**
- * Write a description of class Tableau here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
+
 public class Tableau implements Location
 {
     // instance variables - replace the example below with your own
     private ArrayList<Card> cards;
-    
+
     /**
      * Constructor for objects of class Tableau
      */
@@ -22,22 +17,22 @@ public class Tableau implements Location
     public boolean isEmpty() {
         return (cards.isEmpty());
     }
-    
+
     public void remove() {
         cards.remove(cards.size() - 1);
         updateMoveable();
     }
-    
+
     public void place(Card c) {
         cards.add(c);
         c.setLocation(this);
         updateMoveable();
     }
-    
+
     public Card peek() {
         return cards.get(cards.size() - 1);
     }
-    
+
     public String toString() {
         Iterator i = cards.iterator();
         StringBuilder s = new StringBuilder();
@@ -49,7 +44,7 @@ public class Tableau implements Location
         }
         return s.toString();
     }
-    
+
     public ArrayList<Point> getCards() {
         ArrayList<Point> list = new ArrayList<Point>();
         for (Card c: cards) {
@@ -57,6 +52,7 @@ public class Tableau implements Location
         }
         return list;
     }
+
     public ArrayList<Boolean> getMoveable() {
         ArrayList<Boolean> list = new ArrayList<Boolean>();
         for (Card c: cards) {
@@ -64,7 +60,7 @@ public class Tableau implements Location
         }
         return list;
     }
-    
+
     private void updateMoveable() {
         if (!cards.isEmpty()) {
             int size = cards.size();
@@ -86,6 +82,7 @@ public class Tableau implements Location
             } 
         }    
     }   
+
     private boolean isOpposite(int suite1, int suite2) {
         if ((suite1 == 0) || (suite1 == 1)) {
             if ((suite2 == 2) || (suite2 == 3)) {
@@ -97,5 +94,9 @@ public class Tableau implements Location
             }
         }
         return false;
+    }
+
+    public ArrayList<Card> getMoveGroup(Card card) {
+        return new ArrayList<Card>(cards.subList(cards.indexOf(card),cards.size()));
     }
 }
