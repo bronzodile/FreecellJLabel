@@ -1,4 +1,5 @@
 import java.util.*;
+import java.awt.Point;
 
 public class HomeCell implements Location
 {
@@ -20,6 +21,7 @@ public class HomeCell implements Location
     public void place(Card c) {
         cards.add(c);
         c.setLocation(this);
+        c.setMoveable(false);
     }
     
     public Card peek() {
@@ -38,13 +40,13 @@ public class HomeCell implements Location
         }
         return s.toString();
     }
-    /*
-    public ArrayList<P> getCards() {
-        ArrayList<P> list = new ArrayList<P>();
+    
+    public ArrayList<Point> getCards() {
+        ArrayList<Point> list = new ArrayList<Point>();
         for (Card c: cards) {
-            list.add(new P(c.getRank(), c.getSuite()));
+            list.add(new Point(c.getSuite(),c.getRank()));
         }
         return list;
     }
-    */
+    
 }

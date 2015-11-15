@@ -14,6 +14,7 @@ public class FreeCell implements Location
     public void place(Card c) {
         card = c;
         card.setLocation(this);
+        card.setMoveable(true);
     }
     
     public Card peek() {

@@ -94,8 +94,8 @@ public class GameModel
                 Tableau tab = (Tableau) loc;
                 movingGroup = tab.getMoveGroup(currentCard);
                 int availableTempSpots = 0;
-                for (HomeCell hc: homeCells){
-                    if (hc.isEmpty()){
+                for (FreeCell fc: freeCells){
+                    if (fc.isEmpty()){
                         availableTempSpots++;
                     }
                 }
@@ -174,6 +174,18 @@ public class GameModel
 
     public ArrayList<Boolean> getTableauMoveable(int tableauNumber) {
         return tableaus[tableauNumber -1].getMoveable();
+    }
+
+    public Point getFreeCellCard(int i){
+        Card c = freeCells[i].peek();
+        if (c != null) {
+            return new Point(c.getSuite(),c.getRank());
+        }
+        return null;
+    }
+
+    public ArrayList<Point> getHomeCellCards(int i){
+        return homeCells[i].getCards();
     }
 
     /*

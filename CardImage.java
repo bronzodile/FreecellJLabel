@@ -12,7 +12,7 @@ public class CardImage extends JLabel
     private int memX;
     private int memY;
 
-    public CardImage(int r, int s)
+    public CardImage(int s, int r)
     {
         ImageIcon icon = getImage(r,s);
         this.setIcon(icon);
@@ -44,7 +44,7 @@ public class CardImage extends JLabel
 
     private static String getPath(int i, int j) {
         char c = ' ';        
-        switch(i) {
+        switch(j) {
             case 0:
             c = 'h';
             break;
@@ -58,7 +58,7 @@ public class CardImage extends JLabel
             c = 'c';
             break;
         }
-        return new String("images/" + j + c + ".gif");
+        return new String("images/" + i + c + ".gif");
     }
 
     public void setMoveable(boolean newMoveable)
@@ -84,5 +84,11 @@ public class CardImage extends JLabel
 
     public CardImage getNextCard() {
         return nextCard;
+    }
+    public int getSuite(){
+        return suite;
+    }
+    public int getRank() {
+        return rank;
     }
 }

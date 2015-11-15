@@ -5,6 +5,7 @@ import java.awt.event.*;
 
 public class GameView extends JPanel implements MouseListener, MouseMotionListener
 {
+    private GameController gc;
     private JLayeredPane layeredPane;
     private CardImage[][] cards;
     private CardImage dragLabel;
@@ -15,17 +16,25 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
     private int dragFromY;
     private int dragFromLayer;
     private JLabel[] dropPanels;
+    private int lastDragX;
+    private int lastDragY;
+    private JLabel[] freeCells;
+    private JLabel[] homeCells;    
 
     private static final int WINDOWH = 600;
     private static final int WINDOWW = 1000;
-    private static final int TABLEAUTOP = 100;
+    private static final int TABLEAUTOP = WINDOWH / 5;
     private static final int MARGIN = 15;
+    private static final int PADDING = MARGIN / 3;
     private static final int CARDOFFSET = 30;
     private static final int TABLEAUSTEP = 100;
+    private static final int BASEWIDTH = 73;
+    private static final int BASEHEIGHT = 97;
     private static final int FIRSTHOVERINGLEVEL = 20;
 
-    // public GameView(GameController gc){
-    public GameView(){
+    public GameView(GameController newgc)
+    {
+        gc = newgc;
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(WINDOWW, WINDOWH));        
@@ -43,12 +52,41 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
             dropPanels[i].setVerticalAlignment(JLabel.TOP);
             dropPanels[i].setHorizontalAlignment(JLabel.CENTER);
             dropPanels[i].setOpaque(true);
-            dropPanels[i].setBackground(Color.gray);
+            // dropPanels[i].setBackground(Color.gray);
             dropPanels[i].setForeground(Color.black);
-            dropPanels[i].setBorder(BorderFactory.createLineBorder(Color.black));
-            dropPanels[i].setBounds((i + 1) * TABLEAUSTEP + MARGIN,TABLEAUTOP + MARGIN  , 90, WINDOWH - TABLEAUTOP);            
+            // dropPanels[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            dropPanels[i].setBounds((i + 1) * TABLEAUSTEP,TABLEAUTOP + MARGIN * 2, BASEWIDTH + MARGIN * 2, WINDOWH - TABLEAUTOP - MARGIN);            
             layeredPane.add(dropPanels[i],new Integer(0));
         }
+        freeCells = new JLabel[4];
+        for (int i = 0; i < 4; i++) {
+            freeCells[i] = new JLabel();
+            freeCells[i].setVerticalAlignment(JLabel.TOP);
+            freeCells[i].setHorizontalAlignment(JLabel.CENTER);
+            freeCells[i].setOpaque(true);
+            freeCells[i].setBackground(Color.lightGray);
+            freeCells[i].setForeground(Color.black);
+            freeCells[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            freeCells[i].setBounds((i + 1) * TABLEAUSTEP + MARGIN - PADDING,MARGIN * 2 - PADDING, BASEWIDTH + 2* PADDING, BASEHEIGHT + 2 * PADDING);
+            layeredPane.add(freeCells[i],new Integer(0));
+
+        }
+        homeCells = new JLabel[4];
+        for (int i = 0; i < 4; i++) {
+            homeCells[i] = new JLabel();
+            homeCells[i].setVerticalAlignment(JLabel.TOP);
+            homeCells[i].setHorizontalAlignment(JLabel.CENTER);
+            homeCells[i].setOpaque(true);
+            // homeCells[i].setBackground(Color.green);
+            homeCells[i].setBackground(new Color(15,134,54));
+            homeCells[i].setForeground(Color.black);
+            homeCells[i].setBorder(BorderFactory.createLineBorder(Color.black));
+            homeCells[i].setBounds((i + 5) * TABLEAUSTEP + MARGIN - PADDING,MARGIN * 2 - PADDING, BASEWIDTH + 2* PADDING, BASEHEIGHT + 2 * PADDING);
+            layeredPane.add(homeCells[i],new Integer(0));
+
+        }
+        lastDragX = 0;
+        lastDragY = 0;
 
         for (int i = 0; i < 4; i++){
             for(int j = 0; j < 13; j++){
@@ -72,10 +110,31 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
             if (prevCard != null) {
                 prevCard.setNextCard(cards[p.x][p.y - 1]);
             }
-            cards[p.x][p.y - 1].setLocation(i * TABLEAUSTEP + MARGIN,TABLEAUTOP + MARGIN + CARDOFFSET * cardCounter);
+            cards[p.x][p.y - 1].setLocation(i * TABLEAUSTEP + MARGIN,TABLEAUTOP + MARGIN * 2 + CARDOFFSET * (cardCounter - 1));
             cards[p.x][p.y - 1].setMoveable(b.booleanValue());
             cards[p.x][p.y - 1].setStack(i + 9);
+            cards[p.x][p.y - 1].setNextCard(null);            
             prevCard = cards[p.x][p.y - 1];
+            cardCounter += 1;
+        }
+    }
+
+    public void setFreeCell(int i, Point p, boolean isMoveable) {
+        if (p != null){
+            layeredPane.setLayer(cards[p.x][p.y - 1],1);
+            cards[p.x][p.y - 1].setLocation((i + 1) * TABLEAUSTEP + MARGIN, MARGIN * 2);
+            cards[p.x][p.y - 1].setMoveable(isMoveable);      
+            cards[p.x][p.y - 1].setNextCard(null);                        
+        }
+    }
+
+    public void setHomeCell(int i, ArrayList<Point> homeCell,boolean isMoveable) {
+        int cardCounter = 1;
+        for (Point p: homeCell) {
+            layeredPane.setLayer(cards[p.x][p.y - 1],cardCounter);
+            cards[p.x][p.y - 1].setLocation((i + 5) * TABLEAUSTEP + MARGIN, MARGIN * 2);
+            cards[p.x][p.y - 1].setMoveable(isMoveable);
+            cards[p.x][p.y - 1].setNextCard(null);            
             cardCounter += 1;
         }
     }
@@ -117,6 +176,8 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
             Point p = SwingUtilities.convertPoint(dragLabel, e.getPoint(), layeredPane);
             int x = p.x - dragLabelWidthDiv2;
             int y = p.y - dragLabelHeightDiv3;
+            lastDragX = p.x;
+            lastDragY = p.y;
             dragLabel.setLocation(x, y);
             CardImage tempLabel = dragLabel.getNextCard();
             while (tempLabel != null) {
@@ -141,16 +202,32 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
                 tempLabel = tempLabel.getNextCard();
             }
 
-            Point p = SwingUtilities.convertPoint(dragLabel, e.getPoint(), dropPanels[0]);
-            
+            for (int i = 0; i < 8; i++) {
+                if (new Rectangle(dropPanels[i].getLocation(),dropPanels[i].getSize()).contains(lastDragX,lastDragY)) {
+                    gc.click(dragLabel.getRank(),dragLabel.getSuite(),i + 9); 
+                }
+            }   
+
+            for (int i = 0; i < 4; i++) {
+                if (new Rectangle(freeCells[i].getLocation(),freeCells[i].getSize()).contains(lastDragX,lastDragY)) {
+                    gc.click(dragLabel.getRank(),dragLabel.getSuite(),i + 1); 
+                }
+            }   
+
+            for (int i = 0; i < 4; i++) {
+                if (new Rectangle(homeCells[i].getLocation(),homeCells[i].getSize()).contains(lastDragX,lastDragY)) {
+                    gc.click(dragLabel.getRank(),dragLabel.getSuite(),i + 5); 
+                }
+            }   
             dragLabel = null;
             dragLabelWidthDiv2 = 0;
             dragLabelHeightDiv3 = 0;
             dragFromX = 0;
             dragFromY = 0;            
             dragFromLayer = 0;
-            
-            
+            lastDragX = 0;
+            lastDragY = 0;
+
         }
     }  
 
