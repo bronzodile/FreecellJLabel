@@ -1,12 +1,6 @@
 import java.util.ArrayList;
 import java.awt.Point;
 
-/**
- * Write a description of class GameModel here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
- */
 public class GameModel
 {
     // instance variables - replace the example below with your own
@@ -14,15 +8,13 @@ public class GameModel
     private FreeCell[] freeCells;
     private HomeCell[] homeCells;
     private Tableau[] tableaus;
+    private ArrayList<Move> moveLog;
 
-    /**
-     * Constructor for objects of class GameModel
-     */
     public GameModel()
     {
 
         freeCells = new FreeCell[4];
-        homeCells = new HomeCell[4];
+        homeCells = new HomeCell[4];        
         for (int i = 0; i < 4; i++) {
             freeCells[i] = new FreeCell();
             homeCells[i] = new HomeCell();
@@ -41,7 +33,7 @@ public class GameModel
                 tableaus[i].place(deck.getCard());
             }
         }
-
+        moveLog = new ArrayList<Move>();
     }
 
     public void move(int r, int s, int where) {
@@ -60,6 +52,7 @@ public class GameModel
             }
             if (freeCells[where - 1].isEmpty()) {
                 loc.remove();
+                logDaMove(loc, s, r);            
                 freeCells[where - 1].place(currentCard);
             }     
             break;
@@ -76,12 +69,14 @@ public class GameModel
             if (homeCells[where - 5].isEmpty()) {
                 if (currentCard.getRank() == 1) {
                     loc.remove();
+                    logDaMove(loc, s, r);
                     homeCells[where - 5].place(currentCard);
                     currentCard.setMoveable(false);
                 }
             } else if (homeCells[where - 5].peek().getRank() + 1 == currentCard.getRank()) {
                 if (homeCells[where - 5].peek().getSuite() == currentCard.getSuite()) {
                     loc.remove();
+                    logDaMove(loc, s, r);                    
                     homeCells[where - 5].place(currentCard);
                     currentCard.setMoveable(false);
                 }
@@ -111,6 +106,7 @@ public class GameModel
             }
             if (tableaus[where - 9].isEmpty()) {
                 loc.remove();
+                logDaMove(loc, s, r);                
                 tableaus[where - 9].place(currentCard);
                 if (movingGroup.size() > 1) {
                     for (int i = 1; i < movingGroup.size();i++) {
@@ -123,6 +119,7 @@ public class GameModel
             } else if (tableaus[where - 9].peek().getRank() - 1 == currentCard.getRank()) {
                 if (isOpposite(tableaus[where - 9].peek().getSuite(), currentCard.getSuite())) {
                     loc.remove();
+                    logDaMove(loc, s, r);
                     tableaus[where - 9].place(currentCard);
                     if (movingGroup.size() > 1) {
                         for (int i = 1; i < movingGroup.size();i++) {
@@ -188,23 +185,73 @@ public class GameModel
         return homeCells[i].getCards();
     }
 
-    /*
-     * 
-    public ArrayList<P> getFreeCell() {
-    ArrayList<P> list = new ArrayList<P>();
-    for (int i = 0; i < 4; i++) {
-    if (freeCells[i].peek() != null) {
-    list.add(new P(freeCells[i].peek().getRank(),freeCells[i].peek().getSuite()));
-    } else {
-    list.add(null);
+    private void logDaMove(Location from, int suite, int rank) {
+        if (from instanceof FreeCell){
+            int i = 0;
+            for (int j = 0; j < 4; j++) {
+                if (freeCells[j] == from){
+                    i = j + 1;
+                }
+            }
+            moveLog.add(new Move(suite, rank, i));
+
+        }
+        if (from instanceof HomeCell){
+            int i = 0;
+            for (int j = 0; j < 4; j++) {
+                if (homeCells[j] == from){
+                    i = j + 5;
+                }
+            }
+            moveLog.add(new Move(suite, rank, i));
+        }
+        if (from instanceof Tableau){
+            int i = 0;
+            for (int j = 0; j < 8; j++) {
+                if (tableaus[j] == from){
+                    i = j + 9;
+                }
+            }
+            moveLog.add(new Move(suite, rank, i));
+        }
     }
+
+    public void unMove(){
+        if (moveLog.isEmpty()) {
+            return;
+        }
+        Move m = moveLog.remove(moveLog.size() - 1);
+        Card currentCard = deck.findCard(m.getRank(), m.getSuite());
+        Location loc = currentCard.getLocation();
+        int from = m.getFrom();
+        ArrayList<Card> movingGroup = new ArrayList<Card>();
+        if (loc instanceof Tableau){
+            Tableau tab = (Tableau) loc;
+            movingGroup = tab.getMoveGroup(currentCard);
+        }
+        switch (from) {
+            case 1: case 2: case 3: case 4: // Going to a Free Cell
+            loc.remove();
+            freeCells[from - 1].place(currentCard);
+            break;
+            case 5: case 6: case 7: case 8: // Going to a Home Cell
+            loc.remove();
+            homeCells[from - 5].place(currentCard);
+            break;
+            case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 16: // Going to a Tableau                  
+            loc.remove();
+            tableaus[from - 9].place(currentCard);
+            if (movingGroup.size() > 1) {
+                for (int i = 1; i < movingGroup.size();i++) {
+                    loc.remove(); 
+                }
+                for (int i = 1; i < movingGroup.size();i++) {
+                    tableaus[from - 9].place(movingGroup.get(i));
+                }
+            }
+            break;
+            default:
+            break;        
+        }
     }
-    return list;
-    }
-     */
-    /*
-    public ArrayList<P> getHomeCell(int cellNumber) {
-    return homeCells[cellNumber - 1].getCards();
-    } 
-     */
 }

@@ -1,7 +1,8 @@
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.awt.event.*;
 
-public class GameController extends JFrame
+public class GameController extends JFrame implements KeyListener
 {
     private static GameModel gm;
     private static GameView gv;
@@ -21,6 +22,8 @@ public class GameController extends JFrame
          */
         // gv = new GameView();
         gv = new GameView(this);
+        this.addKeyListener(this);
+
     }
 
     public static void main(String[] args) {
@@ -54,13 +57,33 @@ public class GameController extends JFrame
             gv.setHomeCell(i, gm.getHomeCellCards(i), false);
         }
 
-        /*          
-        gv.setFreeCell(gm.getFreeCell());
-        for (int i = 1; i < 5; i++) {
-        gv.setHomeCell(i, gm.getHomeCell(i));
-        }
-         */
         gv.repaint();
     }
 
+    public void keyTyped(KeyEvent e) {
+    }
+
+    /** Handle the key-pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        if ((e.getKeyCode() == KeyEvent.VK_Z) && ((e.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+            gm.unMove();
+            for (int i = 1; i < 9; i++) {
+                gv.setTableau(i, gm.getTableau(i),gm.getTableauMoveable(i));
+            }
+            for (int i = 0; i < 4; i++) {
+                gv.setFreeCell(i, gm.getFreeCellCard(i), true);
+            }
+            for (int i = 0; i < 4; i++) {
+                gv.setHomeCell(i, gm.getHomeCellCards(i), false);
+            }
+
+            gv.repaint();
+
+        }
+
+    }
+
+    /** Handle the key-released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+    }    
 }

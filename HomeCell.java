@@ -15,7 +15,8 @@ public class HomeCell implements Location
         return (cards.isEmpty());
     }
     
-    public void remove() {
+    public void remove() {        
+        cards.remove(cards.size() - 1);
     }
     
     public void place(Card c) {
