@@ -230,6 +230,9 @@ public class GameView extends JPanel implements MouseListener, MouseMotionListen
 
         }
     }  
+    public boolean isDragging() {
+        return (dragLabel != null);
+    }
 
     public void mouseExited  (MouseEvent e) {}  // ignore these events
     public void mouseMoved   (MouseEvent e) {}  // ignore these events

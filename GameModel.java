@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.awt.Point;
+import java.awt.event.*;
 
 public class GameModel
 {
@@ -9,6 +10,7 @@ public class GameModel
     private HomeCell[] homeCells;
     private Tableau[] tableaus;
     private ArrayList<Move> moveLog;
+    private ArrayList<ActionListener> listeners;
 
     public GameModel()
     {
@@ -34,9 +36,11 @@ public class GameModel
             }
         }
         moveLog = new ArrayList<Move>();
+        listeners = new ArrayList<ActionListener>();
     }
 
     public void move(int r, int s, int where) {
+        int prevSize = moveLog.size();
         Card currentCard = deck.findCard(r, s);
         if (!currentCard.getMoveable()) return;
         Location loc = null;
@@ -135,6 +139,13 @@ public class GameModel
             default:
             break;
         }
+        if (prevSize != moveLog.size()){
+            for (ActionListener a: listeners) {
+                a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,new String("move")));
+            }
+
+        }
+
     }
 
     private boolean isOpposite(int suite1, int suite2) {
@@ -252,6 +263,17 @@ public class GameModel
             break;
             default:
             break;        
+        }   
+        for (ActionListener a: listeners) {
+            a.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,new String("move")));
         }
     }
+
+    public void addActionListener(ActionListener newListener) {
+        if (listeners.contains(newListener)) {
+            return;
+        }
+        listeners.add(newListener);
+    }
+
 }
