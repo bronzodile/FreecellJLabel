@@ -12,7 +12,7 @@ public class GameModel
     private ArrayList<Move> moveLog;
     private ArrayList<ActionListener> listeners;
 
-    public GameModel()
+    public GameModel(boolean DebugMode)
     {
 
         freeCells = new FreeCell[4];
@@ -22,7 +22,11 @@ public class GameModel
             homeCells[i] = new HomeCell();
         }
         tableaus = new Tableau[8];
-        deck = new Deck(6);
+        if (DebugMode) {
+            deck = new Deck(6);
+        } else {
+            deck = new Deck();
+        }
         for (int i = 0; i < 4; i++) {
             tableaus[i] = new Tableau();
             for (int j = 0; j < 7; j++) {

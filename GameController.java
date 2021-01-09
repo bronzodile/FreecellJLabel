@@ -6,13 +6,14 @@ public class GameController extends JFrame implements KeyListener, ActionListene
 {
     private static GameModel gm;
     private static GameView gv;
+    private static boolean DEBUGMODE = false;
 
     /**
      * Constructor for objects of class GameController
      */
     public GameController()
     {
-        gm = new GameModel();        
+        gm = new GameModel(DEBUGMODE);        
         /*
         gm.move(7,1,1);
         gm.move(10,3,9);
